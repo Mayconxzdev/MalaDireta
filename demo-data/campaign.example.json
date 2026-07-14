@@ -1,0 +1,8 @@
+{
+  "name": "Comunicado de demonstracao",
+  "subject": "Novidades para nossos parceiros",
+  "message": "Ola! Este e um exemplo ficticio usado apenas para demonstrar o fluxo.",
+  "status": "draft",
+  "batch_size": 20,
+  "interval_minutes": 15
+}

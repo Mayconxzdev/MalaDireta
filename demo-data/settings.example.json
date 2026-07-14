@@ -1,0 +1,7 @@
+{
+  "batch_size": 20,
+  "interval_value": 15,
+  "interval_unit": "minutes",
+  "deduplication_enabled": true,
+  "attachment_retention_days": 90
+}

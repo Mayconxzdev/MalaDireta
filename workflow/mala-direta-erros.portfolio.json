@@ -1,0 +1,97 @@
+{
+  "name": "Mala Direta - Tratamento de Erros (portfolio)",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        0
+      ],
+      "name": "Erro do Workflow"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst e=$json||{},now=new Date().toISOString();\nconst exec=e.execution||{},wf=e.workflow||{},tr=e.trigger||{};\nconst err=exec.error||e.error||{};\nreturn [{json:{error_id:'err_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7),workflow_name:String(wf.name||''),node_name:String(exec.lastNodeExecuted||err.node?.name||''),message:String(err.message||err.description||'Erro sem mensagem'),execution_id:String(exec.id||''),campaign_id:String(exec.data?.campaign_id||''),email:String(exec.data?.email||''),status:'pending',created_at:now,resolved_at:''}}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -250,
+        0
+      ],
+      "name": "Preparar Registro de Erro"
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "mdv_errors"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null
+        },
+        "options": {
+          "optimizeBulk": false
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "name": "Registrar Erro na Data Table"
+    },
+    {
+      "parameters": {
+        "content": "# Mala Direta — Tratamento de Erros\n\nEste workflow é usado pelo workflow principal em **Settings → Error workflow**.\n\nEle recebe erros automáticos e grava:\n\n- workflow;\n- node;\n- mensagem;\n- execução;\n- campanha/e-mail quando disponíveis;\n- data;\n- status pendente/resolvido.\n\nO Error Trigger não dispara em testes manuais. Ele funciona quando uma execução automática do workflow principal falha.",
+        "height": 240,
+        "width": 1050,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -650,
+        -260
+      ],
+      "name": "README — Tratamento de Erros"
+    }
+  ],
+  "connections": {
+    "Erro do Workflow": {
+      "main": [
+        [
+          {
+            "node": "Preparar Registro de Erro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Registro de Erro": {
+      "main": [
+        [
+          {
+            "node": "Registrar Erro na Data Table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Sao_Paulo"
+  },
+  "tags": []
+}
