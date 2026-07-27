@@ -29,10 +29,20 @@ function sanitizeString(value) {
   return result
     .replace(/192\.168\.\d{1,3}\.\d{1,3}/g, 'localhost')
     .replace(/smtp\.[a-z0-9.-]+/gi, 'smtp.example.com')
+    .replace(/\bSkyMail\b/gi, 'Provedor SMTP')
     .replace(/[a-z0-9._%+-]+@(?!example\.com\b)[a-z0-9.-]+\.[a-z]{2,}/gi, 'remetente@example.com')
     .replace(/vesper\.ind\.br/gi, 'example.com')
+    .replace(/vesper\\\\\.ind\\\\\.br/gi, 'example\\\\.com')
+    .replace(/assinatura_vesper/gi, 'assinatura_empresa')
+    .replace(/data-vesper-signature/gi, 'data-company-signature')
+    .replace(/restoreVesperSignature/g, 'restoreDefaultSignature')
+    .replace(/signature_restore_vesper/g, 'signature_restore_default')
+    .replace(/sig_vesper_reference/g, 'sig_company_reference')
     .replace(/Mala Direta Vesper/gi, 'Mala Direta')
-    .replace(/Vesper Equipamentos/gi, 'Empresa Exemplo');
+    .replace(/Vesper Equipamentos(?: EX LTDA)?/gi, 'Empresa Exemplo LTDA')
+    .replace(/\bVesper\b/g, 'Empresa Exemplo')
+    // Também cobre a referência escapada dentro de expressões regulares dos Code nodes.
+    .replace(/vesper/gi, 'empresa');
 }
 
 function sanitize(value) {
@@ -51,7 +61,7 @@ function sanitize(value) {
 
 function prepare(source, target, publicName) {
   const raw = JSON.parse(fs.readFileSync(source, 'utf8'));
-  const workflow = sanitize(raw);
+  const workflow = sanitize(Array.isArray(raw) ? raw[0] : raw);
   workflow.name = publicName;
   workflow.active = false;
   workflow.pinData = {};

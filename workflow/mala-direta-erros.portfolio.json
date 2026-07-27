@@ -1,5 +1,10 @@
 {
+  "updatedAt": "2026-07-14T21:06:43.270Z",
+  "createdAt": "2026-07-14T21:06:43.270Z",
   "name": "Mala Direta - Tratamento de Erros (portfolio)",
+  "description": null,
+  "active": false,
+  "isArchived": false,
   "nodes": [
     {
       "parameters": {},
@@ -87,11 +92,18 @@
       ]
     }
   },
-  "pinData": {},
-  "active": false,
   "settings": {
     "executionOrder": "v1",
     "timezone": "America/Sao_Paulo"
   },
-  "tags": []
+  "staticData": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionCounter": 1,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "versionMetadata": {
+    "name": "Version 87b5e6bd",
+    "description": ""
+  }
 }

@@ -48,27 +48,87 @@ async function sanitizeVisibleData(page) {
     for (const node of textNodes) {
       node.nodeValue = (node.nodeValue || '')
         .replace(emailPattern, fakeEmail)
-        .replace(/Vesper/gi, 'Portfolio')
+        .replace(/Vesper Equipamentos(?: EX LTDA)?/gi, 'Empresa Exemplo LTDA')
+        .replace(/Equipamentos EX LTDA/gi, 'Empresa Exemplo LTDA')
+        .replace(/Vesper/gi, 'Empresa Exemplo')
+        .replace(/vesper\.ind\.br/gi, 'empresa-exemplo.com.br')
+        .replace(/www\.Empresa Exemplo\.ind\.br/gi, 'www.empresa-exemplo.com.br')
         .replace(/SkyMail/gi, 'provedor SMTP')
-        .replace(/AGRADECIMENTOS FPSO EXPO 2026\s*->\s*NAVALSHORE 2026/gi, 'Comunicado de demonstracao');
+        .replace(/(?:AGRADECIMENTOS\s+)?FPSO EXPO 2026\s*(?:->|—|-)\s*NAVALSHORE 2026/gi, 'Comunicado de demonstracao')
+        .replace(/Navalshore[_\s-]*2026/gi, 'evento-demonstrativo')
+        .replace(/FPSO EXPO 2026/gi, 'Evento demonstrativo')
+        .replace(/(?:Cel\.?\s*:\s*)?(?:\(?\d{2}\)?\s*)?\d{4,5}-\d{4}(?:\s*\|\s*(?:\(?\d{2}\)?\s*)?\d{4,5}-\d{4})*/g, 'Telefone demonstrativo');
     }
 
+    document.title = 'Mala Direta — demonstração';
+    const brand = document.querySelector('.brand h1');
+    if (brand) brand.textContent = 'Mala Direta — demonstração';
+
+    document.querySelectorAll('#signatureEditor img, [data-signature-preview] img').forEach((image) => {
+      const placeholder = document.createElement('div');
+      placeholder.textContent = 'Imagem institucional — demonstração';
+      placeholder.style.cssText = 'display:inline-block;margin:6px 0;padding:10px 12px;border:1px dashed #9db5d8;border-radius:8px;background:#f8fafc;color:#52627a;font:700 12px Inter,Segoe UI,Arial,sans-serif';
+      image.replaceWith(placeholder);
+    });
+
     document.querySelectorAll('input, textarea').forEach((element) => {
-      if (element.value) element.value = element.value.replace(emailPattern, fakeEmail);
+      if (element.value) {
+        element.value = element.value
+          .replace(emailPattern, fakeEmail)
+          .replace(/Vesper/gi, 'Empresa Exemplo')
+          .replace(/Navalshore 2026/gi, 'Evento demonstrativo')
+          .replace(/FPSO EXPO 2026/gi, 'Evento demonstrativo');
+      }
       if (element.placeholder) element.placeholder = element.placeholder.replace(emailPattern, 'contato@empresa-exemplo.com.br');
     });
 
-    document.querySelectorAll('table tbody tr').forEach((row, index) => {
-      const cells = [...row.querySelectorAll('td')];
-      const emailCell = cells.find((cell) => /@/.test(cell.textContent || ''));
-      if (emailCell) {
-        emailCell.textContent = `contato${String(index + 1).padStart(2, '0')}@empresa-exemplo.com.br`;
-        const emailIndex = cells.indexOf(emailCell);
-        if (emailIndex > 0) cells[emailIndex - 1].textContent = `Empresa Exemplo ${index + 1}`;
-      } else if (cells.length && /campanha|histórico|fila antiga|mensagem migrada/i.test(cells[0].textContent || '')) {
-        cells[0].textContent = `Campanha de demonstracao ${index + 1}`;
-      }
+    document.querySelectorAll('table').forEach((table) => {
+      const headers = [...table.querySelectorAll('thead th')].map((cell) => cell.textContent || '');
+      const campaignTable = headers.some((text) => /^campanha$/i.test(text.trim()));
+      [...table.querySelectorAll('tbody tr')].forEach((row, index) => {
+        const cells = [...row.querySelectorAll('td')];
+        if (campaignTable && cells.length) {
+          cells[0].textContent = `Campanha demonstrativa ${index + 1}`;
+          if (cells[2]) cells[2].textContent = `${(index + 1) * 12} de ${(index + 1) * 12}`;
+          return;
+        }
+        const emailCell = cells.find((cell) => /@/.test(cell.textContent || ''));
+        if (emailCell) {
+          emailCell.textContent = `contato${String(index + 1).padStart(2, '0')}@empresa-exemplo.com.br`;
+          const emailIndex = cells.indexOf(emailCell);
+          if (emailIndex > 0) cells[emailIndex - 1].textContent = `Empresa Exemplo ${index + 1}`;
+        }
+      });
     });
+
+    const demoStats = { sContacts: '248', sRunning: '1', sSent: '1.036', sErrors: '0' };
+    for (const [id, value] of Object.entries(demoStats)) {
+      const element = document.getElementById(id);
+      if (element) element.textContent = value;
+    }
+
+    const campaignModal = document.getElementById('campaignModal');
+    if (campaignModal && campaignModal.classList.contains('open')) {
+      const modalTitle = campaignModal.querySelector('.modalhead h2');
+      if (modalTitle) modalTitle.textContent = 'Nova campanha demonstrativa';
+      const form = document.getElementById('campaignForm');
+      if (form) {
+        const name = form.querySelector('input[name="name"]');
+        const subject = form.querySelector('input[name="subject"]');
+        if (name) name.value = 'Comunicado demonstrativo';
+        if (subject) subject.value = 'Atualização para parceiros';
+      }
+      const editor = document.getElementById('messageEditor');
+      if (editor) editor.innerHTML = '<p>Olá,</p><p>Esta é uma mensagem demonstrativa para apresentar o fluxo de revisão, destinatários, assinatura e envio seguro.</p>';
+      document.querySelectorAll('#attachmentList .file span, #inlineList .file span').forEach((element, index) => {
+        element.textContent = `arquivo-demonstrativo-${index + 1}.pdf · 128 KB`;
+      });
+    }
+
+    const signatureEditor = document.getElementById('signatureEditor');
+    if (signatureEditor) {
+      signatureEditor.innerHTML = '<p>Atenciosamente,</p><strong style="color:#dc2626">Empresa Exemplo LTDA</strong><br><span>Contato institucional — demonstração</span><br><a href="mailto:contato@empresa-exemplo.com.br">contato@empresa-exemplo.com.br</a><div style="margin-top:10px;padding:10px 12px;border:1px dashed #9db5d8;border-radius:8px;background:#f8fafc;color:#52627a;font:700 12px Inter,Segoe UI,Arial,sans-serif">Imagem institucional — demonstração</div>';
+    }
   });
 }
 
@@ -120,15 +180,27 @@ async function generateCover(browser) {
   await page.setViewport({ width: 1440, height: 900 });
   try {
     await capture(page, null, '01-dashboard.png');
-    await capture(page, async (current) => clickButton(current, '+ Nova campanha'), '02-mensagem-e-previa.png');
     await capture(page, async (current) => {
       await clickButton(current, '+ Nova campanha');
+      const hasChoice = await current.evaluate(() => !![...document.querySelectorAll('button')].find((item) => (item.textContent || '').trim() === 'Começar do zero'));
+      if (hasChoice) await clickButton(current, 'Começar do zero');
+    }, '02-mensagem-e-previa.png');
+    await capture(page, async (current) => {
+      await clickButton(current, '+ Nova campanha');
+      const hasChoice = await current.evaluate(() => !![...document.querySelectorAll('button')].find((item) => (item.textContent || '').trim() === 'Começar do zero'));
+      if (hasChoice) await clickButton(current, 'Começar do zero');
       await current.type('input[placeholder="Ex.: Evento de junho"]', 'Comunicado de demonstracao');
       await current.type('input[placeholder="Assunto que o destinatário verá"]', 'Novidades para nossos parceiros');
       await clickButton(current, 'Continuar');
     }, '03-selecao-destinatarios.png');
     await capture(page, async (current) => clickButton(current, 'Contatos'), '04-gerenciamento-contatos.png');
-    await capture(page, async (current) => clickButton(current, 'Configurações'), '05-configuracao-e-protecao.png');
+    await capture(page, async (current) => {
+      await clickButton(current, 'Configurações');
+      await current.evaluate(() => {
+        const editor = document.getElementById('signatureEditor');
+        if (editor) editor.style.minHeight = '300px';
+      });
+    }, '05-configuracao-e-protecao.png');
     await capture(page, async (current) => clickButton(current, 'Campanhas'), '06-campanhas-e-fila.png');
     await generateCover(browser);
   } finally {

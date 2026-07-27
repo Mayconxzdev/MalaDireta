@@ -1,6 +1,6 @@
 {
   "name": "mala-direta-n8n-portfolio",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "description": "Case real de automacao de campanhas de e-mail com n8n, PostgreSQL e painel web.",
   "scripts": {

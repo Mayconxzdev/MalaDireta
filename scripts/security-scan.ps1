@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $extensions = @('.json', '.js', '.md', '.html', '.css', '.ps1', '.yml', '.yaml', '.csv', '.txt')
-$excludedDirectories = @('.git', 'node_modules')
+$excludedDirectories = @('.git', 'node_modules', '.tmp')
 $allowedEmail = 'mayconxz00dev@gmail.com'
 
 $patterns = @(

@@ -4,149 +4,147 @@
 
 <h1 align="center">Mala Direta</h1>
 <p align="center">
-  <strong>Um processo real de comunicação em lote transformado em produto interno: painel web, fila persistente, deduplicação, auditoria e operação em rede.</strong>
+  <strong>Automação de e-mail operacional: uma interface simples para a equipe e uma operação rastreável, segura e previsível no n8n.</strong>
 </p>
 
 <p align="center">
   <a href="README.en.md">English</a> ·
   <a href="docs/CASE_STUDY.md">Case técnico</a> ·
   <a href="docs/ARCHITECTURE.md">Arquitetura</a> ·
-  <a href="docs/TESTING.md">Qualidade</a>
+  <a href="docs/TESTING.md">Qualidade</a> ·
+  <a href="docs/DEPLOYMENT.md">Setup público</a>
 </p>
 
 <p align="center">
   <img alt="quality" src="https://github.com/Mayconxzdev/MalaDireta/actions/workflows/quality.yml/badge.svg">
   <img alt="n8n" src="https://img.shields.io/badge/n8n-2.27-EA4B71?logo=n8n&logoColor=white">
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-Data%20Tables-4169E1?logo=postgresql&logoColor=white">
-  <img alt="Docker" src="https://img.shields.io/badge/Docker-deploy-2496ED?logo=docker&logoColor=white">
+  <img alt="Docker" src="https://img.shields.io/badge/Docker-local%20runtime-2496ED?logo=docker&logoColor=white">
 </p>
 
-## O projeto em uma frase
+## O problema que resolvi
 
-Eu construí esta automação para tirar o envio de comunicados do improviso. Em vez de planilhas soltas, cópia manual de endereços e nenhuma rastreabilidade, a equipe passou a trabalhar em um painel simples, acessado pelo navegador, enquanto o n8n cuida da validação, fila, SMTP, histórico e recuperação de erros.
+Envio em lote não é apenas “disparar e-mail”. O processo anterior dependia de planilhas, cópia manual de endereços, arquivos de assinatura espalhados e pouca certeza sobre quem recebeu, o que falhou ou se uma campanha cancelada realmente parou.
 
-O repositório é uma versão pública e sanitizada do sistema que roda em ambiente real. As telas são da aplicação em funcionamento; nomes, e-mails, endereços internos e credenciais foram removidos ou substituídos por dados fictícios.
+Transformei esse fluxo em um produto interno acessado pelo navegador. Quem opera não precisa abrir o editor do n8n: cria a campanha, revisa destinatários, escolhe a assinatura, testa, agenda e acompanha o resultado. O n8n fica responsável pela regra de negócio, persistência, fila, SMTP, auditoria e recuperação de falhas.
 
-## O que foi entregue
+> Este é um recorte público e demonstrativo de uma automação em operação. Dados, nomes, domínio, e-mails, identidade visual, credenciais e IDs internos foram substituídos. Os exports estão inativos por design e não podem disparar nada após a importação.
 
-- painel web responsivo servido por webhook, sem exigir acesso ao editor do n8n;
-- cadastro, importação, busca, grupos e lista de bloqueio de contatos;
-- editor de mensagem, assinatura, anexos e envio de teste;
-- campanhas em rascunho, pausadas, arquivadas e em processamento;
-- parcelamento por lote e agendamento em segundo plano;
-- proteção contra duplicidade por destinatário e campanha;
-- histórico de eventos, exportação CSV e workflow separado de erros;
-- migração idempotente da base anterior para Data Tables;
-- execução em Docker com PostgreSQL e backup diário validado.
+## O que torna a solução operacionalmente segura
 
-## Evidência de escala
+| Situação de operação | Como a automação responde |
+|---|---|
+| A equipe precisa criar uma campanha sem conhecer n8n | Painel web servido pelos próprios webhooks do workflow |
+| Uma mensagem foi cancelada enquanto havia fila | O loop revalida status e elegibilidade antes de cada destinatário; e-mails já aceitos pelo SMTP não podem ser recolhidos |
+| Um lote falha ou o provedor demora | Estado por destinatário, evento auditável e workflow separado para erro técnico |
+| Uma assinatura muda entre comunicações | Biblioteca versionada, escolha por campanha, snapshot no momento do envio e restauração do padrão |
+| A imagem da assinatura não deve aparecer em uma campanha | Opção explícita por campanha; a biblioteca mantém a versão completa para reutilização posterior |
+| O painel está lendo dados enquanto a fila atualiza | Agregação estável de indicadores, sem paginação concorrente sobre a tabela de destinatários |
+| Um contato não pode voltar à fila | Lista de supressão e deduplicação por campanha + destinatário |
 
-Snapshot de validação do ambiente real em **14/07/2026**:
+## Evidência técnica do export público atual
 
-| Indicador | Resultado |
+| Indicador | Evidência |
 |---|---:|
-| Nós no workflow principal | 147 |
-| Data Table nodes | 67 |
-| Code nodes | 46 |
-| Webhooks de produção | 3 |
+| Nós no workflow principal | 158 |
+| Data Table nodes | 72 |
+| Code nodes | 49 |
+| Webhooks públicos | 3 |
+| Schedule Triggers | 2 |
+| Loop seguro por lote | 1 `Split In Batches` |
 | Data Tables de domínio | 9 |
-| Contatos migrados | 997 |
-| Contatos bloqueados por dado inválido | 20 |
-| Eventos históricos preservados | 1.522 |
-| Envios disparados durante a validação | 0 |
+| Credenciais, dados e campanhas reais no repositório | 0 |
 
-Os números demonstram o ambiente validado, mas nenhum registro de produção está incluído neste repositório.
+O [validador do repositório](scripts/validate-public-workflows.js) exige a topologia mínima, checa as rotas, compila cada Code node e bloqueia referências internas ou credenciais antes de uma alteração ser aceita.
 
-## Produto em uso
+## Interface em operação — dados demonstrativos
 
 | Visão geral | Mensagem e prévia |
 |---|---|
-| ![Dashboard real com dados sanitizados](docs/assets/screenshots/01-dashboard.png) | ![Editor de mensagem](docs/assets/screenshots/02-mensagem-e-previa.png) |
+| ![Dashboard da aplicação com dados demonstrativos](docs/assets/screenshots/01-dashboard.png) | ![Editor de mensagem e prévia](docs/assets/screenshots/02-mensagem-e-previa.png) |
 
 | Seleção de destinatários | Contatos e grupos |
 |---|---|
-| ![Seleção de destinatários](docs/assets/screenshots/03-selecao-destinatarios.png) | ![Gerenciamento de contatos](docs/assets/screenshots/04-gerenciamento-contatos.png) |
+| ![Seleção de destinatários e regras](docs/assets/screenshots/03-selecao-destinatarios.png) | ![Gerenciamento de contatos e grupos](docs/assets/screenshots/04-gerenciamento-contatos.png) |
 
-| Configuração de envio | Workflow real no n8n |
+| Biblioteca de assinatura | Canvas real do n8n |
 |---|---|
-| ![Configuração e proteção](docs/assets/screenshots/05-configuracao-e-protecao.png) | ![Canvas real do workflow](docs/assets/workflow/01-workflow-completo.png) |
+| ![Configuração e biblioteca de assinaturas em ambiente demonstrativo](docs/assets/screenshots/05-configuracao-e-protecao.png) | ![Canvas real do workflow no editor n8n](docs/assets/workflow/01-workflow-completo.png) |
 
-> As capturas do painel foram feitas na aplicação real com substituição dos dados visíveis por exemplos. A captura do canvas mostra o workflow publicado de produção, sem credenciais.
+| Operação de campanhas | |
+|---|---|
+| ![Fila, arquivamento, reenvio de erros e exportação por campanha](docs/assets/screenshots/06-campanhas-e-fila.png) | |
 
-## Como funciona
+As telas do painel vêm da aplicação em execução com o conteúdo visível substituído por exemplos. O canvas é uma captura do editor n8n: não é diagrama desenhado, não contém credenciais e é enquadrado para não expor navegação ou dados operacionais.
+
+## Fluxo de ponta a ponta
 
 ```mermaid
 flowchart LR
-    U["Usuário no navegador"] -->|GET /mala-direta| P["Painel HTML/CSS/JS"]
-    P -->|POST /mala-direta-acao| R["Roteador de ações"]
-    P -->|GET /mala-direta-exportar| X["Exportação CSV"]
-    R --> V["Validação e regras de negócio"]
-    V --> D[("9 Data Tables")]
-    V --> Q["Campanha e fila"]
-    Q --> S["Agendador por lote"]
-    S --> M["SMTP"]
-    M --> E["Eventos e auditoria"]
+    U["Operador"] -->|GET| P["Painel web"]
+    P -->|POST| R["Roteador de ações"]
+    R --> V["Validação e persistência"]
+    V --> C["Campanha + snapshot da assinatura"]
+    C --> Q["Fila por destinatário"]
+    T["Agendador"] --> Q
+    Q --> G["Revalidar status\ne elegibilidade"]
+    G --> S["SMTP"]
+    S --> A["Eventos / auditoria"]
+    V --> D[("9 Data Tables\nPostgreSQL")]
+    A --> D
+    R -. falha .-> E["Workflow de erros"]
     E --> D
-    R -. falha .-> H["Workflow de erros"]
-    H --> D
 ```
 
-O frontend está dentro do próprio workflow. O webhook GET monta o painel com os dados do domínio; o POST recebe ações com resposta rápida; dois gatilhos agendados processam a fila e a limpeza de anexos. A persistência usa Data Tables sobre PostgreSQL, evitando que atualização ou reinício do container apague a operação.
+O frontend vive dentro do workflow, deliberadamente. Isso reduziu a superfície de deploy para a operação local e manteve a experiência, o estado e a automação no mesmo produto. Os trade-offs estão documentados em [Arquitetura](docs/ARCHITECTURE.md).
 
-## Decisões que fizeram diferença
+## Decisões de engenharia
 
-| Decisão | Motivo |
+| Decisão | Por que importa |
 |---|---|
-| Data Tables + PostgreSQL | consistência, consulta e persistência melhores que arquivos JSON concorrentes |
-| campanha e destinatário separados | acompanhar progresso, erro e deduplicação por pessoa |
-| lista de supressão | um e-mail inválido ou bloqueado não volta para a fila por acidente |
-| fila agendada | controlar volume e respeitar limites do servidor SMTP |
-| migração idempotente | poder repetir a carga sem multiplicar contatos ou eventos |
-| workflow de erros | separar recuperação operacional do fluxo principal |
-| credencial no n8n | nenhum segredo no JSON exportado ou no GitHub |
-
-Os detalhes e trade-offs estão em [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) e [docs/CASE_STUDY.md](docs/CASE_STUDY.md).
+| Data Tables sobre PostgreSQL | persistência e consulta sem depender de arquivos concorrentes |
+| campanha e destinatário separados | progresso, retry, bloqueio e histórico por pessoa |
+| biblioteca de assinatura versionada | evita editar HTML a cada envio e preserva o contexto de cada campanha |
+| cancelamento revalidado no loop | reduz o risco de continuar uma fila após uma decisão operacional |
+| agregados estáveis no dashboard | evita erro de paginação quando a fila altera o total durante a leitura |
+| workflow dedicado de erros | isola falhas técnicas do fluxo de negócio |
+| credencial no cofre do n8n | nenhum segredo é exportado, exibido ou versionado |
 
 ## Estrutura do repositório
 
 ```text
 .
-├── .github/workflows/quality.yml
-├── demo-data/                 # exemplos fictícios
-├── docs/                      # arquitetura, case, deploy e testes
-├── scripts/                   # sanitização, captura e validação
-├── workflow/
-│   ├── mala-direta-principal.portfolio.json
-│   └── mala-direta-erros.portfolio.json
-├── docker-compose.yml
+├── .github/workflows/quality.yml  # validação no GitHub Actions
+├── demo-data/                     # exemplos fictícios
+├── docs/                          # case, arquitetura, setup e testes
+├── docs/assets/                   # capturas sanitizadas e canvas real
+├── scripts/                       # sanitização, captura e validação
+├── workflow/                      # exports n8n públicos e inativos
+├── docker-compose.yml             # runtime local de referência
 └── README.md
 ```
 
-## Validar o projeto
+## Validar localmente
 
 ```powershell
 npm ci
 npm test
 ```
 
-O teste confere a estrutura dos dois workflows, contagem mínima dos componentes críticos, rotas esperadas, estado inativo e ausência de credenciais. A segunda etapa procura IPs privados, caminhos locais, domínios corporativos e padrões de segredo.
+O teste valida os dois workflows e faz varredura de privacidade. Para montar uma instalação de estudo, siga o [setup público](docs/DEPLOYMENT.md): é necessário criar as nove Data Tables e vincular uma credencial SMTP própria no cofre do n8n. Não há segredos embutidos neste repositório.
 
-## Rodar localmente
+## Limites e próximos passos responsáveis
 
-O `docker-compose.yml` é uma base reproduzível para n8n + PostgreSQL. A versão pública do workflow mantém a topologia real, mas usa placeholders para os IDs das Data Tables e não inclui credenciais SMTP. Isso é intencional.
+- o painel deve ficar atrás de autenticação e TLS se sair de uma rede confiável;
+- o primeiro disparo deve usar destinatário autorizado e limite SMTP conservador;
+- bounce, reputação e descadastro devem ser monitorados em volume maior;
+- múltiplos workers exigem uma política adicional de concorrência e rate limit.
 
-1. copie `.env.example` para `.env` e gere valores fortes;
-2. execute `docker compose up -d`;
-3. importe os dois JSONs de `workflow/`;
-4. crie as nove Data Tables descritas em [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) e associe cada placeholder;
-5. cadastre o SMTP no cofre de credenciais do n8n;
-6. publique primeiro o workflow de erros e depois o principal.
-
-Não use o projeto para envio não solicitado. Consentimento, descadastro, SPF, DKIM, DMARC, limites do provedor e LGPD fazem parte da operação responsável.
+Não use esta automação para envio não solicitado. Consentimento, descadastro, SPF, DKIM, DMARC, limites do provedor e LGPD fazem parte do produto, não são detalhes posteriores.
 
 ## Autor
 
-**Mayconxzdev** — automação, arquitetura, implementação full-stack, migração e operação.
+**Maycon Ferreira** — automação, arquitetura, implementação full-stack, UX operacional, migração e validação.
 
 - GitHub: [github.com/Mayconxzdev](https://github.com/Mayconxzdev)
 - Contato: [mayconxz00dev@gmail.com](mailto:mayconxz00dev@gmail.com)
