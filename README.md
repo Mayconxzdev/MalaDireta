@@ -17,7 +17,7 @@
 
 <p align="center">
   <img alt="quality" src="https://github.com/Mayconxzdev/MalaDireta/actions/workflows/quality.yml/badge.svg">
-  <img alt="n8n" src="https://img.shields.io/badge/n8n-2.27-EA4B71?logo=n8n&logoColor=white">
+  <<img alt="n8n" src="https://img.shields.io/badge/n8n-2.32.5-EA4B71?logo=n8n&logoColor=white">">
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-Data%20Tables-4169E1?logo=postgresql&logoColor=white">
   <img alt="Docker" src="https://img.shields.io/badge/Docker-local%20runtime-2496ED?logo=docker&logoColor=white">
 </p>
@@ -56,6 +56,12 @@ Transformei esse fluxo em um produto interno acessado pelo navegador. Quem opera
 | Credenciais, dados e campanhas reais no repositório | 0 |
 
 O [validador do repositório](scripts/validate-public-workflows.js) exige a topologia mínima, checa as rotas, compila cada Code node e bloqueia referências internas ou credenciais antes de uma alteração ser aceita.
+
+### Estado operacional
+
+A automação está em uso no ambiente interno e já ultrapassou **10 mil execuções de produção** no n8n.
+
+Esse número representa um snapshot operacional do painel e não deve ser interpretado como SLA, auditoria formal ou garantia permanente de volume e disponibilidade.
 
 ## Interface em operação — dados demonstrativos
 
@@ -144,7 +150,7 @@ Não use esta automação para envio não solicitado. Consentimento, descadastro
 
 ## Autor
 
-**Maycon Ferreira** — automação, arquitetura, implementação full-stack, UX operacional, migração e validação.
+**Maycon Ferreira** — arquitetura de automação, integrações, UX operacional, migração, validação e sustentação.
 
 - GitHub: [github.com/Mayconxzdev](https://github.com/Mayconxzdev)
 - Contato: [mayconxz00dev@gmail.com](mailto:mayconxz00dev@gmail.com)
