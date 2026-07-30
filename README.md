@@ -17,7 +17,7 @@
 
 <p align="center">
   <img alt="quality" src="https://github.com/Mayconxzdev/MalaDireta/actions/workflows/quality.yml/badge.svg">
-  <<img alt="n8n" src="https://img.shields.io/badge/n8n-2.32.5-EA4B71?logo=n8n&logoColor=white">">
+  <img alt="n8n" src="https://img.shields.io/badge/n8n-2.32.5-EA4B71?logo=n8n&logoColor=white">
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-Data%20Tables-4169E1?logo=postgresql&logoColor=white">
   <img alt="Docker" src="https://img.shields.io/badge/Docker-local%20runtime-2496ED?logo=docker&logoColor=white">
 </p>
