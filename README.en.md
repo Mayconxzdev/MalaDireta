@@ -8,8 +8,8 @@ I built Mala Direta to replace a campaign process based on spreadsheets, manual 
 
 | Area | Current state |
 |---|---|
-| **Internal use** | Six campaigns executed over a current base of 1,020 contacts. |
-| **Campaign scale** | One campaign included 900+ recipients; changed or invalid addresses were identified for review. |
+| **Internal use** | Campaign workflow with reviewable recipients, queued delivery and result history. |
+| **Delivery control** | Deduplication, failure handling and cancellation checks before each recipient. |
 | **Public architecture** | Two workflows; the main flow has 158 nodes, 72 Data Table nodes, 49 Code nodes and nine domain Data Tables. |
 | **Reliability** | Recipient-level state, deduplication, suppression, retries, a separate error workflow and auditable events. |
 | **Operational control** | Cancellation is revalidated inside the loop before every recipient. Messages already accepted by SMTP cannot be recalled. |
