@@ -26,8 +26,8 @@ Desenvolvi a Mala Direta para substituir um processo baseado em planilhas, cópi
 
 | Aspecto | Situação atual |
 |---|---|
-| **Uso interno** | Seis campanhas executadas sobre uma base atual de 1.020 contatos. |
-| **Escala de campanha** | Uma campanha incluiu mais de 900 destinatários; endereços alterados ou inválidos ficaram identificados para revisão. |
+| **Uso interno** | Fluxo de campanhas com destinatários revisáveis, fila de envio e histórico de resultados. |
+| **Controle de envio** | Deduplicação, tratamento de falhas e cancelamento revalidado antes de cada destinatário. |
 | **Arquitetura pública** | Dois workflows; o principal possui 158 nós, 72 Data Table nodes, 49 Code nodes e nove Data Tables de domínio. |
 | **Confiabilidade** | Fila por destinatário, deduplicação, supressão, retry, workflow de erros, histórico e eventos auditáveis. |
 | **Controle operacional** | O cancelamento é revalidado dentro do loop antes de cada destinatário. Mensagens já aceitas pelo SMTP não podem ser recolhidas. |
