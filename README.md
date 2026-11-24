@@ -6,7 +6,7 @@
 <p align="center"><strong>Automação de campanhas de e-mail com interface simples, fila por destinatário, cancelamento revalidado e auditoria.</strong></p>
 
 <p align="center">
-  <a href="https://mayconxzdev.github.io/projetos/postagem-redes/">Case no portfólio</a> · <a href="README.en.md">English</a> ·
+  <a href="https://mayconxzdev.github.io/projetos/mala-direta/">Case no portfólio</a> · <a href="README.en.md">English</a> ·
   <a href="docs/CASE_STUDY.md">Case técnico</a> ·
   <a href="docs/ARCHITECTURE.md">Arquitetura</a> ·
   <a href="docs/TESTING.md">Qualidade</a> ·
