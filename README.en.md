@@ -15,7 +15,7 @@ I built Mala Direta to replace a campaign process based on spreadsheets, manual 
 | **Operational control** | Cancellation is revalidated inside the loop before every recipient. Messages already accepted by SMTP cannot be recalled. |
 | **Privacy** | Inactive exports, fictional data, no credentials and automated checks for the public version. |
 
-> The n8n environment hosting this and other automations has surpassed **10,000 production executions**. That volume belongs to the complete environment, not only to Mala Direta.
+> The workflow runs on demand. Aggregate execution counts for the shared n8n environment do not measure this project’s impact in isolation.
 
 ## How it works
 
