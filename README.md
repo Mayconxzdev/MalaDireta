@@ -6,7 +6,7 @@
 <p align="center"><strong>Automação de campanhas de e-mail com interface simples, fila por destinatário, cancelamento revalidado e auditoria.</strong></p>
 
 <p align="center">
-  <a href="README.en.md">English</a> ·
+  <a href="https://mayconxzdev.github.io/projetos/postagem-redes/">Case no portfólio</a> · <a href="README.en.md">English</a> ·
   <a href="docs/CASE_STUDY.md">Case técnico</a> ·
   <a href="docs/ARCHITECTURE.md">Arquitetura</a> ·
   <a href="docs/TESTING.md">Qualidade</a> ·
@@ -33,7 +33,7 @@ Desenvolvi a Mala Direta para substituir um processo baseado em planilhas, cópi
 | **Controle operacional** | O cancelamento é revalidado dentro do loop antes de cada destinatário. Mensagens já aceitas pelo SMTP não podem ser recolhidas. |
 | **Privacidade** | Exports inativos, dados fictícios, ausência de credenciais e validação automática da versão pública. |
 
-> A instância n8n que hospeda esta e outras automações ultrapassou **10 mil execuções de produção**. Esse volume pertence ao ambiente completo e não somente à Mala Direta.
+> A automação é acionada sob demanda. Os números de execução da instância compartilhada não representam, isoladamente, o impacto da Mala Direta.
 
 ## Como funciona
 
